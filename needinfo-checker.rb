@@ -44,7 +44,7 @@ class BugzillaAPI
     request = Net::HTTP::Get.new(uri.request_uri)
     request.basic_auth @user, @pass
 
-    warn "Downloading from #{uri}"
+    warn "Downloading details from #{uri}"
     res = http.request(request)
 
     case res
@@ -144,6 +144,7 @@ if ids != []
   puts e_mail.build
 else
   bugzilla.warn "No bugs for #{requestee}"
+  exit 2
 end
 
 #
