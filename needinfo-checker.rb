@@ -4,13 +4,14 @@ require "uri"
 require "net/http"
 require "nokogiri"
 require "xmlsimple"
-require "pp"
+require "yaml"
 
 class BugzillaAPI
   SUSE_BUGZILLA = 'https://bugzilla.suse.com'
 
-  def initialize(user, pass, bugzilla_api = SUSE_BUGZILLA)
-    @bugzilla_url = bugzilla_api
+  attr_reader :api_url
+
+  def set_auth(user, pass)
     @user = user
     @pass = pass
   end
@@ -30,7 +31,16 @@ class BugzillaAPI
 
   def build_uri(script_name, params)
     uri_params = params.map{|k,v| URI.escape(k) + '=' + URI.escape(v)}.join('&')
-    URI("#{@bugzilla_url}/#{script_name}?#{uri_params}")
+    URI("#{@api_url}/#{script_name}?#{uri_params}")
+  end
+
+  def api_url=(url)
+    warn "API URL: #{url}"
+    @api_url = url
+  end
+
+  def default_api_url
+    SUSE_BUGZILLA
   end
 
   private
@@ -42,7 +52,10 @@ class BugzillaAPI
     http.use_ssl = true if uri.scheme == "https"
 
     request = Net::HTTP::Get.new(uri.request_uri)
-    request.basic_auth @user, @pass
+    if !["", nil].include?(@user) && !["", nil].include?(@pass)
+      warn "Using bugzilla auth"
+      request.basic_auth @user, @pass
+    end
 
     warn "Downloading details from #{uri}"
     res = http.request(request)
@@ -127,12 +140,52 @@ class NeedinfoEMail
   end
 end
 
-def self.usage
-  puts "ruby #{__FILE__} e-mail_of_the_needinfo_requestee"
+class Authentication
+  AUTH_FILE = File.expand_path("~/.bugzilla.conf")
+
+  def initialize
+    @auth = File.exist?(AUTH_FILE) ? parse(AUTH_FILE) : {}
+  end
+
+  def user_for(url)
+    return nil unless @auth
+    @auth.fetch(api_url, {}).fetch("user", nil)
+  end
+
+  def pass_for(url)
+    return nil unless @auth
+    @auth.fetch(api_url, {}).fetch("pass", nil)
+  end
+
+  # Returns the Bugzilla API URL if only one URL is present
+  # in the auth-file, otherwise returns nil.
+  def api_url
+    return nil unless @auth
+
+    if @auth.empty?
+      warn "There are no API configurations in #{AUTH_FILE}"
+      return nil
+    end
+
+    if @auth.keys.size > 1
+      warn "There are #{@auth.keys.size} API configurations in #{AUTH_FILE}"
+      return nil
+    end
+
+    @auth.keys.first
+  end
+
+  private
+
+  def parse(file)
+    warn "Parsing #{file} auth file"
+    YAML.load_file(file)
+  end
 end
 
-user = `read -p "Bugzilla login: " uid; echo $uid`.chomp
-pass = `read -s -p "Password: " password; echo $password`.chomp
+def self.usage
+  puts "ruby #{__FILE__} e-mail_of_the_needinfo_requestee [bugzilla_api_url]"
+end
 
 requestee = ARGV[0]
 unless requestee
@@ -140,7 +193,18 @@ unless requestee
   exit 1
 end
 
-bugzilla = BugzillaSearch.new(user, pass)
+bugzilla = BugzillaSearch.new
+auth = Authentication.new
+
+if !bugzilla.api_url
+  bugzilla.api_url = auth.api_url || ARGV[1] || bugzilla.default_api_url
+end
+
+user = auth.user_for(bugzilla.api_url) || `read -p "#{bugzilla.api_url} login: " uid; echo $uid`.chomp
+pass = auth.pass_for(bugzilla.api_url) || `read -s -p "#{bugzilla.api_url} password: " password; echo $password`.chomp
+
+bugzilla.set_auth(user, pass)
+
 ids = bugzilla.needinfo_bugs(requestee)
 bugzilla.warn "Found bugs: #{ids}"
 
