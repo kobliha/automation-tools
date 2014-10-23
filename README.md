@@ -17,8 +17,7 @@ Example of usage:
 
 for login in bugzilla_login_1 bugzilla_login_2 bugzilla_login_3; do
   echo "Checking needinfo for ${login}"
-  checker_out=`echo "your_user\nyour_password" \
-    | ruby needinfo-checker.rb ${login}@suse.com`
+  checker_out=`ruby needinfo-checker.rb ${login}@suse.com`
 
   if [ "${checker_out}" != "" ]; then
     recipient="${login}@suse.com"
