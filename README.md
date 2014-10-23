@@ -5,17 +5,17 @@ It currently contains just one tool...
 
 ## needinfo-checker.rb
 
-Connects to bugzilla.suse.com checks whather any bug is waiting for some
+Connects to a given bugzilla URL, checks whether any bug is waiting for some
 information from the given e-mail address (login). If any bug is found,
-the needinfo-checker created new e-mail, just ready to be sent to the
-usual suspect.
+the needinfo-checker creates new e-mail text, just ready to be sent to the
+usual suspect, e.g., using *mailx*.
 
 Example of usage:
 
 ```bash
 #!/bin/bash
 
-for login in bugzilla_login_1 bugzilla_login_2 bugzilla_login_3; do
+for login in login_1 login_2 login_3; do
   echo "Checking needinfo for ${login}"
   checker_out=`ruby needinfo-checker.rb ${login}@suse.com`
 
@@ -37,4 +37,12 @@ Server configuration can be kept in your home directory in *~/.bugzilla.conf* fi
 https://bugzilla.suse.com:
   user: user-name
   pass: YourU$erPa$$word
+```
+
+If such file exists and contains just one configuration, it's automatically
+used. If there are more server configuration, you have to choose one by defining
+the second parameter for the script:
+
+```bash
+ruby needinfo-checker.rb e-mail@address.org https://bugzilla.url.org
 ```
