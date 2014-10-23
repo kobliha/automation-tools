@@ -30,3 +30,12 @@ for login in bugzilla_login_1 bugzilla_login_2 bugzilla_login_3; do
   fi
 done
 ```
+
+Server configuration can be kept in your home directory in *~/.bugzilla.conf* file:
+
+```yaml
+---
+https://bugzilla.suse.com:
+  user: user-name
+  pass: YourU$erPa$$word
+```
