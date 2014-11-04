@@ -15,7 +15,7 @@ unless requestee
 end
 
 bugzilla = BugzillaSearch.new
-auth = Authentication.new
+auth = Authentication.new("~/.bugzilla.conf")
 
 if !bugzilla.api_url
   bugzilla.api_url = auth.api_url || ARGV[1] || bugzilla.default_api_url

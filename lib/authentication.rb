@@ -3,10 +3,9 @@
 require "yaml"
 
 class Authentication
-  AUTH_FILE = File.expand_path("~/.bugzilla.conf")
-
-  def initialize
-    @auth = File.exist?(AUTH_FILE) ? parse(AUTH_FILE) : {}
+  def initialize(auth_file)
+    @auth_file = File.expand_path(auth_file)
+    @auth = File.exist?(@auth_file) ? parse(@auth_file) : {}
   end
 
   def user_for(url)
@@ -25,12 +24,12 @@ class Authentication
     return nil unless @auth
 
     if @auth.empty?
-      warn "There are no API configurations in #{AUTH_FILE}"
+      warn "There are no API configurations in #{@auth_file}"
       return nil
     end
 
     if @auth.keys.size > 1
-      warn "There are #{@auth.keys.size} API configurations in #{AUTH_FILE}"
+      warn "There are #{@auth.keys.size} API configurations in #{@auth_file}"
       return nil
     end
 
