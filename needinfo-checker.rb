@@ -38,5 +38,6 @@ else
 end
 
 #
-# ruby needinfo-checker.rb requestee@suse.com | mailx -r yast-ci@opensuse.org -s "Bugzilla: Information Still Needed" requestee@suse.com
+# ruby needinfo-checker.rb requestee@suse.com [$bugzilla_url] | \
+#   mailx -r yast-ci@opensuse.org -s "Bugzilla: Information Still Needed" requestee@suse.com
 #

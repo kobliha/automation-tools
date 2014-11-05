@@ -40,5 +40,6 @@ else
 end
 
 #
-# ruby fate-checker.rb requestee@suse.com | mailx -r yast-ci@opensuse.org -s "FATE: Information Still Needed" requestee@suse.com
+# ruby fate-checker.rb requestee@suse.com [$api_url] | \
+#   mailx -r yast-ci@opensuse.org -s "FATE: Information Still Needed" requestee@suse.com
 #
