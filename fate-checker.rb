@@ -7,6 +7,7 @@ require "./lib/authentication"
 require "./lib/fate_email"
 
 WAITING_DAYS = 5
+DEFAULT_API = "https://keeper.suse.com/sxkeeper/"
 
 needinfo_person = ARGV[0]
 unless ARGV[0]
@@ -15,7 +16,7 @@ unless ARGV[0]
 end
 
 auth = Authentication.new("~/.fate.conf")
-fate_api_url = ARGV[1] || auth.api_url
+fate_api_url = ARGV[1] || auth.api_url || DEFAULT_API
 
 user = auth.user_for(fate_api_url) || `read -p "#{fate_api_url} login: " uid; echo $uid`.chomp
 pass = auth.pass_for(fate_api_url) || `read -s -p "#{fate_api_url} password: " password; echo $password`.chomp
