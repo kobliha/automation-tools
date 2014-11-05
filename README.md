@@ -11,6 +11,8 @@ information from the given e-mail address (login). If any bug is found,
 the needinfo-checker creates new e-mail text, just ready to be sent to the
 usual suspect, e.g., using *mailx*.
 
+Required rubygems: nokogiri, xml-simple, yaml
+
 Example of usage:
 
 ```bash
@@ -54,6 +56,8 @@ Connects to a FATE instance and checks whether there is an info requested from
 a given person (login, e-mail, or full name). If such features are found, the
 script generates text for an e-mail informing the user to provide the requested
 info.
+
+Required rubygems: crack, yaml
 
 ```bash
 #!/bin/bash
