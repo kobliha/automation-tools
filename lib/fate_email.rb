@@ -7,7 +7,7 @@ class FateEmail
   DEFAULT_CONTACT = "yast-devel@opensuse.org"
   PROJECT_HOME_PAGE = "https://github.com/kobliha/bugzilla-tools"
 
-  def initialize(features, person, contact_email = DEFAULT_CONTACT)
+  def initialize(features, person, waiting_for_days, contact_email = DEFAULT_CONTACT)
     # Exactly one feature found
     if features.is_a?(Hash)
       @features = [features]
@@ -20,38 +20,43 @@ class FateEmail
 
     @features = features
     @person = person
+    @waiting_for_days = waiting_for_days
     @contact_email = contact_email
   end
 
   def build
-    message = header
+    features_infos = []
 
     @features.each do |feature|
-      message << build_feature_info(feature)
+      features_infos << build_feature_info(feature)
     end
+    features_infos.reject!(&:nil?)
 
-    message << footer
+    header(features_infos) << features_infos.join << footer
   end
 
   private
 
   def build_feature_info(feature)
     last_changed = Time.parse(feature["feature"]["k:versioningsummary"]["k:lastmodifydate"])
+    waiting_days = (TIME_NOW - last_changed).to_i / ONE_DAY
+    return if waiting_days < @waiting_for_days
+
     info_providers = feature["feature"]["actor"].select{
       |actor|
       actor["role"] == "infoprovider" && [actor["person"]["email"], actor["person"]["userid"], actor["person"]["fullname"]].include?(@person)
     }
     info_provider = info_providers.first.fetch("person", {})
 
-    "Feature #" << feature["feature"]["k:id"] << ": " << feature["feature"]["title"] << "\n" <<
-      "Last changed: " << last_changed.to_s <<
-      " (" << ((TIME_NOW - last_changed).to_i / ONE_DAY).to_s << " days ago)\n" <<
-      info_provider["fullname"] << " (" << info_provider["email"] << ")\n\n"
+    "* Feature #" << feature["feature"]["k:id"] << ": " << feature["feature"]["title"] << "\n" <<
+    "  Last changed: " << last_changed.to_s <<
+      " (" << waiting_days.to_s << " days ago)\n" <<
+    "  " << info_provider["fullname"] << " (" << info_provider["email"] << ")\n\n"
   end
 
-  def header
+  def header(features)
     "Hi,\n\n" <<
-      "FATE is waiting for your response in #{@features.size} #{@features.size > 1 ? 'features' : 'feature'}:\n\n"
+      "FATE is waiting for your response in #{features.size} open #{features.size > 1 ? 'features' : 'feature'}:\n\n"
   end
 
   def footer
