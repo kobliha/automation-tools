@@ -3,6 +3,7 @@
 require "uri"
 require "net/http"
 require "cgi"
+require "crack"
 
 class FateAPI
   def initialize(user, pass, url)
@@ -29,7 +30,8 @@ class FateAPI
     when Net::HTTPRedirection
       raise "Redirected to #{res['location']}"
     when Net::HTTPSuccess
-      res.body
+      features = Crack::XML.parse(res.body)
+      features.fetch("k:collection", {}).fetch("k:object", [])
     else
       raise "Error code #{res.value} not solved"
     end

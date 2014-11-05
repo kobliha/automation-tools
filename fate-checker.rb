@@ -1,7 +1,5 @@
 #! /usr/bin/env ruby
 
-require "crack"
-
 require "./lib/fate_api"
 require "./lib/authentication"
 require "./lib/fate_email"
@@ -22,9 +20,7 @@ user = auth.user_for(fate_api_url) || `read -p "#{fate_api_url} login: " uid; ec
 pass = auth.pass_for(fate_api_url) || `read -s -p "#{fate_api_url} password: " password; echo $password`.chomp
 
 fate = FateAPI.new(user, pass, fate_api_url)
-
-features = Crack::XML.parse(fate.get(needinfo_person))
-features = features.fetch("k:collection", {}).fetch("k:object", [])
+features = fate.get(needinfo_person)
 
 if features.size > 0
   fate_email = FateEmail.new(features, needinfo_person, WAITING_DAYS)
