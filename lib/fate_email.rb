@@ -18,7 +18,6 @@ class FateEmail
       raise "Unknown features type #{@features.class}: #{@features.inspect}"
     end
 
-    @features = features
     @person = person
     @waiting_for_days = waiting_for_days
     @contact_email = contact_email
@@ -31,6 +30,8 @@ class FateEmail
       features_infos << build_feature_info(feature)
     end
     features_infos.reject!(&:nil?)
+
+    return if features_infos.empty?
 
     header(features_infos) << features_infos.join << footer
   end

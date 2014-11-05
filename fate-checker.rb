@@ -27,7 +27,13 @@ features = features.fetch("k:collection", {}).fetch("k:object", [])
 
 if features.size > 0
   fate_email = FateEmail.new(features, needinfo_person, WAITING_DAYS)
-  puts fate_email.build
+  message = fate_email.build
+
+  if message.nil?
+    warn "No features for #{needinfo_person} older than #{WAITING_DAYS} days"
+  else
+    puts message
+  end
 else
   warn "No features for #{needinfo_person}"
 end
