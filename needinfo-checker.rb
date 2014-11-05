@@ -1,7 +1,7 @@
 #! /usr/bin/env ruby
 
 require "./lib/bugzilla_api"
-require "./lib/needinfo_email"
+require "./lib/bugzilla_email"
 require "./lib/authentication"
 
 def self.usage
@@ -31,7 +31,7 @@ bugzilla.warn "Found bugs: #{ids}"
 
 if ids != []
   bugs = bugzilla.bugs_details(ids)
-  e_mail = NeedinfoEMail.new(bugs, bugzilla)
+  e_mail = BugzillaEmail.new(bugs, bugzilla)
   puts e_mail.build
 else
   bugzilla.warn "No bugs for #{requestee}"
