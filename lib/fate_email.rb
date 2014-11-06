@@ -5,7 +5,7 @@ class FateEmail
   TIME_NOW = Time.now
 
   DEFAULT_CONTACT = "yast-devel@opensuse.org"
-  PROJECT_HOME_PAGE = "https://github.com/kobliha/bugzilla-tools"
+  PROJECT_HOME_PAGE = "https://github.com/kobliha/automation-tools"
 
   def initialize(features, person, waiting_for_days, contact_email = DEFAULT_CONTACT)
     # Exactly one feature found

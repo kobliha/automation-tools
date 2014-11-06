@@ -2,7 +2,7 @@
 
 class BugzillaEmail
   DEFAULT_CONTACT = "yast-devel@opensuse.org"
-  PROJECT_HOME_PAGE = "https://github.com/kobliha/bugzilla-tools"
+  PROJECT_HOME_PAGE = "https://github.com/kobliha/automation-tools"
 
   def initialize(bugs, bugzilla, contact_email = DEFAULT_CONTACT)
     @bugs = bugs

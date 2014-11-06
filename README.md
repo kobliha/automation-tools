@@ -1,10 +1,10 @@
-# Bugzilla Tools
+# Automation Tools
 
 This project has started as a [HackWeek](https://hackweek.suse.com/) project
 to automate as much as possible. And because people tend to forget, the first
 focus were tools to remind users that someone is waiting for info from them.
 
-## needinfo-checker
+## bugzilla-checker
 
 Connects to a given bugzilla URL, checks whether any bug is waiting for some
 information from the given e-mail address (login). If any bug is found,
@@ -20,7 +20,7 @@ Example of usage:
 
 for login in login_1 login_2 login_3; do
   echo "Checking needinfo for ${login}"
-  checker_out=`ruby needinfo-checker.rb ${login}@suse.com`
+  checker_out=`ruby bugzilla-checker.rb ${login}@suse.com`
 
   if [ "${checker_out}" != "" ]; then
     recipient="${login}@suse.com"
@@ -47,7 +47,7 @@ used. If there are more server configuration, you have to choose one by defining
 the second parameter for the script:
 
 ```bash
-ruby needinfo-checker.rb e-mail@address.org https://bugzilla.url.org
+ruby bugzilla-checker.rb e-mail@address.org https://bugzilla.url.org
 ```
 
 ## fate-checker
