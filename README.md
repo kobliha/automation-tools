@@ -13,6 +13,10 @@ usual suspect, e.g., using *mailx*.
 
 Required rubygems: nokogiri, xml-simple, yaml
 
+To be found at
+[devel:languages:ruby:extensions](https://build.opensuse.org/project/repositories/devel:languages:ruby:extensions)
+repository
+
 Example of usage:
 
 ```bash
@@ -58,6 +62,10 @@ script generates text for an e-mail informing the user to provide the requested
 info.
 
 Required rubygems: crack, yaml
+
+To be found at
+[devel:languages:ruby:extensions](https://build.opensuse.org/project/repositories/devel:languages:ruby:extensions)
+repository
 
 ```bash
 #!/bin/bash
