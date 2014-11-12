@@ -4,7 +4,7 @@ require "./lib/fate_api"
 require "./lib/authentication"
 require "./lib/fate_email"
 
-WAITING_DAYS = 5
+WAITING_DAYS = 3
 DEFAULT_API = "https://keeper.suse.com/sxkeeper/"
 
 needinfo_person = ARGV[0]
