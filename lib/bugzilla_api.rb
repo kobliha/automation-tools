@@ -58,6 +58,7 @@ class BugzillaAPI
 
     warn "Downloading details from #{uri}"
     res = http.request(request)
+    warn "Basic auth did not work, not logged in" if res.body =~ /Log In/
 
     case res
     when Net::HTTPRedirection
