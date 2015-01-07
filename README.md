@@ -93,3 +93,19 @@ https://keeper.suse.com/sxkeeper/:
   user: user-name
   pass: YourU$erPa$$word
 ```
+
+## pot-all
+
+Generates pot files in all subdirectories (repositorires).
+For example, run `pot-all.sh 11` to generate the latest pot files for
+SLE 11 (automatically takes the highest available branch).
+
+You need to start this script in directory with all repositories ckecked-out.
+See https://github.com/yast/yast-meta for more details.
+
+## update-all
+
+Fetches the latest state of available repositories from Git.
+
+You need to start this script in directory with all repositories ckecked-out.
+See https://github.com/yast/yast-meta for more details.
