@@ -10,12 +10,14 @@
 CODESTREAM=$1
 
 if [ "${CODESTREAM}" == "" ]; then
-  echo "Run $0 codestream-number (e.g., 10, 11 or 12...)"
+  echo "Run $0 codestream-number (e.g., 10, 11 or 12..., master)"
   exit 1
 elif [[ ${CODESTREAM} =~ ^1[0-9]$ ]]; then
   echo "Using codestream ${CODESTREAM}"
+elif [[ "${CODESTREAM}" == "master" ]]; then
+  echo "Using the latest state (master)"
 else
-  echo "Not a valid codestream '${CODESTREAM}', use 10, 11 or 12..."
+  echo "Not a valid codestream '${CODESTREAM}', use 10, 11 or 12... or master"
   exit 1
 fi
 
@@ -34,12 +36,16 @@ for D in `ls`; do
   cd ${D} || continue
   echo "Working in repository ${D}"
 
-  # Finds the latest branch (the highest branch Nr.) in repository
-  LATEST_BRANCH=`git branch -a | grep "remotes/origin/.*-${CODESTREAM}\(-\(GA\|SP[1-9]\)\)\?$" | sort | tail -n 1 | sed 's/^.*\///'`
-  echo "Last branch: ${LATEST_BRANCH}"
-  if [ "${LATEST_BRANCH}" == "" ]; then
-    echo "No codestream ${CODESTREAM} branch"
-    continue
+  LATEST_BRANCH="master"
+
+  if [[ "${CODESTREAM}" != "master" ]]; then
+    # Finds the latest branch (the highest branch Nr.) in repository
+    LATEST_BRANCH=`git branch -a | grep "remotes/origin/.*-${CODESTREAM}\(-\(GA\|SP[1-9]\)\)\?$" | sort | tail -n 1 | sed 's/^.*\///'`
+    echo "Last branch: ${LATEST_BRANCH}"
+    if [ "${LATEST_BRANCH}" == "" ]; then
+      echo "No codestream ${CODESTREAM} branch"
+      continue
+    fi
   fi
 
   git branch -a | grep ${TMP_BRANCH} && git branch -D ${TMP_BRANCH}
